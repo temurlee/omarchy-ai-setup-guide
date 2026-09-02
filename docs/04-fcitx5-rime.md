@@ -189,26 +189,8 @@ StartupNotify=true
 
 ### 13.5 ChatGPT app
 
-ChatGPT 启动脚本 `/usr/bin/chatgpt` 会自动加 `--ozone-platform=wayland`（Wayland 会话下），
-但它读取 `~/.config/codex-flags.conf`。**旧配置曾强制走 X11**：
-
-```bash
-# 旧配置（错误）：候选字偏小
---ozone-platform=x11
-```
-
-**修复方式**：
-
-1. 删除/注释 `~/.config/codex-flags.conf` 里的 `--ozone-platform=x11`，
-   让脚本走 Wayland 原生。
-2. 在桌面入口 `~/.local/share/applications/chatgpt.desktop` 的 `Exec` 前加 KDE 环境：
-
-```ini
-Exec=env XDG_CURRENT_DESKTOP=KDE chatgpt %U
-```
-
-> 若不想改系统 desktop，可在 `~/.local/share/applications/` 放同名覆盖文件
-> （用户目录优先于 `/usr/share/applications/`）。
+ChatGPT 的完整检查、用户级桌面入口、验证和回滚步骤已经独立整理到
+[优化 ChatGPT 桌面应用的中文输入体验](09-chatgpt.md)。不要修改系统提供的桌面入口或 `/usr/bin/chatgpt`。
 
 ### 13.6 验证
 
