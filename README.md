@@ -55,8 +55,15 @@
 
 ## 可选内容
 
-- [Omawrite 定制](optional/omawrite-customization.md)：需要本地编译并覆盖系统程序。
-- [双系统、Secure Boot 与 RTC](optional/dual-boot-secureboot-rtc.md)：涉及固件、启动链和 Windows 设置，风险较高。
+以下项目不属于默认配置流程。只有确实需要对应功能，并且用户明确同意相关风险后，智能体才可以执行。
+
+1. **[让 Omawrite 支持独立字号和自适应行宽](optional/omawrite-customization.md)**
+
+   修改并编译 Omawrite 源码，为编辑器增加字号快捷键、字号持久化和更宽的自适应内容区域。安装定制版本会备份并覆盖 `/usr/bin/omawrite`，Omarchy 更新也可能恢复官方版本，因此执行前必须取得用户确认。
+
+2. **[修复双系统的 Secure Boot 和时间问题](optional/dual-boot-secureboot-rtc.md)**
+
+   为 Limine、Omarchy UKI 内核和固件更新程序配置 Secure Boot 签名，并说明如何让 Windows 与 Linux 统一使用 UTC 硬件时钟。该流程涉及 BIOS、启动密钥、EFI 文件和 Windows 注册表，操作失误可能导致系统无法启动，必须逐步确认和验证。
 
 ## 重要说明
 
