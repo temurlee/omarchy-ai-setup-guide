@@ -94,3 +94,78 @@ wl-paste                          # 仍能读到内容 = 生效
 - wl-clip-persist：保住"当前"这份剪贴板，来源应用退出也不丢。
 
 ---
+
+## 8. Exposé 窗口概览插件（expose.window-overview）
+
+### 8.1 作用
+
+第三方 **overlay** 插件，macOS 风格的 Exposé（窗口概览）：
+- 打开后把当前聚焦显示器的所有窗口以实时预览平铺展示；
+- 输入文字可搜索窗口，`Space` 快速预览（Quick Look），`Enter` 激活窗口；
+- 点击卡片激活窗口、中键点击关闭窗口；支持拖拽移动窗口；
+- 支持多显示器：只在聚焦显示器上打开，并显示该显示器的窗口。
+
+> 项目主页：https://github.com/kristofferR/omarchy-expose
+> 插件 id：`expose.window-overview`
+
+### 8.2 安装
+
+```bash
+omarchy plugin add https://github.com/kristofferR/omarchy-expose.git --enable
+```
+
+验证启用状态：
+```bash
+omarchy plugin list | grep expose
+# 应看到：expose.window-overview  enabled  third-party overlay
+```
+
+### 8.3 触发方式：四指上滑打开、四指下滑关闭
+
+作者默认的热角（左上角）已**关闭**，改用四指触控板手势控制。
+
+在 `~/.config/hypr/input.lua` 末尾添加：
+
+```lua
+-- Exposé (expose.window-overview): four-finger swipe up to open, down to close.
+hl.gesture({
+  fingers = 4,
+  direction = "up",
+  action = function()
+    hl.dispatch(hl.dsp.exec_cmd("omarchy-shell expose open"))
+  end,
+})
+
+hl.gesture({
+  fingers = 4,
+  direction = "down",
+  action = function()
+    hl.dispatch(hl.dsp.exec_cmd("omarchy-shell expose close"))
+  end,
+})
+```
+
+关闭热角：
+```bash
+omarchy-shell expose hotCorner off
+```
+
+### 8.4 常用 IPC 命令
+
+```bash
+omarchy-shell expose toggle        # 打开/关闭（也支持 open / close）
+omarchy-shell expose settings toggle   # 打开设置面板
+omarchy-shell expose hotCorner on|off  # 热角开关
+```
+
+### 8.5 验证
+
+```bash
+hyprctl reload
+hyprctl configerrors    # 无报错
+omarchy-shell expose toggle   # 四指上滑或此命令应打开概览
+```
+
+> 插件依赖 Quickshell 原生的 Hyprland 模型（窗口/工作区/显示器状态），不依赖 `hyprexpo`、`hyprpm` 或客户端轮询。
+
+---

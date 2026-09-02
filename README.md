@@ -41,9 +41,9 @@
 
    调整触控板滚动方向与手势行为，将 Chrome 界面设置为中文，并根据代理环境关闭可能影响连接稳定性的 QUIC。
 
-8. **[添加通知中心和剪贴板功能](docs/07-shell-plugins.md)**
+8. **[添加通知中心、剪贴板和窗口概览功能](docs/07-shell-plugins.md)**
 
-   安装 Omarchy 通知中心插件并放到状态栏右侧，同时启用 `wl-clip-persist`，让复制内容在来源应用关闭后仍可粘贴。
+   安装 Omarchy 通知中心插件并放到状态栏右侧，同时启用 `wl-clip-persist`，让复制内容在来源应用关闭后仍可粘贴；并安装 Exposé 窗口概览插件，用四指上滑/下滑开关。
 
 9. **[配置 Figma、微信等常用应用](docs/08-applications.md)**
 
