@@ -35,4 +35,4 @@ command -v yay
 
 ## 执行顺序
 
-返回 [`README.md`](../README.md#默认执行顺序) 按顺序执行。网络准备应早于 Mihomo；代理可用后再处理依赖 GitHub 下载的应用。
+返回 [`README.md`](../README.md#配置流程) 按顺序执行。网络准备应早于 Mihomo；代理可用后再处理依赖 GitHub 下载的应用。
