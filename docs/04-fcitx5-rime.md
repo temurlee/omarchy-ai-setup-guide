@@ -182,10 +182,29 @@ StartupNotify=true
 > 关键：`XDG_CURRENT_DESKTOP=KDE` 要放在 `Exec` 行的命令前面（`env` 前缀）。
 > `omarchy-launch-webapp` 会透传 URL，KDE 环境变量经 `env` 传给子进程。
 
-**固化到环境（可选，全局生效）**：把 `XDG_CURRENT_DESKTOP=KDE` 写入
-`~/.config/environment.d/99-kde-desktop.conf`，则所有 Chrome 系应用自动生效。
-但注意这会**影响其他依赖 `XDG_CURRENT_DESKTOP` 的程序**（文件选择器、portal 等），
-因此推荐只对飞书/ChatGPT 单独配置，不全局设置。
+> **为什么 per-app 方案会「犯病」失效（根因）**：Chrome 有**单实例机制**。
+> 当系统里已有任意一个 Chrome 进程在运行（例如 X、YouTube 等 web app），
+> `omarchy-launch-webapp` 启动新 web app 时会把 URL 交给**已存在的 Chrome 进程**，
+> 而不是新建带 `XDG_CURRENT_DESKTOP=KDE` 的新进程。于是桌面入口里 `env` 前缀
+> 设置的环境变量被忽略，飞书最终跑在旧的 `Hyprland` 环境进程里，选词条再次异常。
+> 只要别的 Chrome 实例还开着，这个坑就会反复出现。
+
+**全局固化（根治，推荐）**：把 `XDG_CURRENT_DESKTOP=KDE` 写入
+`~/.config/environment.d/99-kde-desktop.conf`，让**所有** Chrome 进程（含被单实例
+机制重用的）都拿到 KDE 环境：
+
+```ini
+# ~/.config/environment.d/99-kde-desktop.conf
+# Chromium 系应用（飞书、ChatGPT 等 web app）走 KDE text-input 路径，
+# 使 fcitx5 选词条跟随光标。
+# 全局设置：因为 Chrome 单实例会重用旧进程，per-app 的 env 前缀会失效。
+# 副作用：依赖 XDG_CURRENT_DESKTOP 的程序（文件选择器、portal 等）会看到 KDE。
+XDG_CURRENT_DESKTOP=KDE
+```
+
+- `environment.d` 在**会话登录时**读取，改完需要**重新登录**（或重启相关 Chrome 进程）才生效。
+- 注意这会**影响其他依赖 `XDG_CURRENT_DESKTOP` 的程序**（文件选择器、portal 等），
+  但这是目前能根治单实例重用问题的可靠方案。
 
 ### 13.5 ChatGPT app
 
@@ -205,11 +224,21 @@ fcitx5-diagnose | grep -E "program:|frontend:|cap:"
 # ChatGPT 正常时 frontend 应为 wayland_v2 且 cap=100000072 级别（而非 dbus）
 ```
 
+4. 确认承载飞书的 Chrome 进程环境变量为 KDE（防止被单实例重用旧进程）：
+
+```bash
+# 找到承载飞书的 chrome 进程（--type=browser 的主进程）
+ps -eo pid,args | grep chrome | grep -v grep | grep -vE "type="
+# 查看该进程环境变量，应含 XDG_CURRENT_DESKTOP=KDE
+sudo cat /proc/<pid>/environ | tr '\0' '\n' | grep XDG_CURRENT_DESKTOP
+```
+
 ### 13.7 相关文件
 
 | 项目 | 路径 |
 |------|------|
 | 飞书桌面入口 | `~/.local/share/applications/Feishu.desktop` |
+| **全局 KDE 环境（根治）** | `~/.config/environment.d/99-kde-desktop.conf`（登录时生效） |
 | ChatGPT 启动脚本 | `/usr/bin/chatgpt` |
 | ChatGPT flags | `~/.config/codex-flags.conf` |
 | ChatGPT 桌面入口 | `/usr/share/applications/chatgpt.desktop`（或 `~/.local/share/applications/` 覆盖） |
