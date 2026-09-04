@@ -69,6 +69,10 @@
 
    为 Limine、Omarchy UKI 内核和固件更新程序配置 Secure Boot 签名，并说明如何让 Windows 与 Linux 统一使用 UTC 硬件时钟。该流程涉及 BIOS、启动密钥、EFI 文件和 Windows 注册表，操作失误可能导致系统无法启动，必须逐步确认和验证。
 
+3. **[定制键盘媒体键（PrtSc / F7–F11 / Insert）](optional/keyboard-media-keys.md)**
+
+    这台笔记本的 PrtSc 和 F7–F11 等键在硬件层被重映射为媒体键值或 `Super+字母` 宏，导致截图、听写等默认快捷键失效或行为异常。该文档记录逐键核实实际键值、改绑 `~/.config/hypr/bindings.lua` 和配置 voxtype 听写的过程，包含验证与回滚方法。改绑会占用对应 `Super+字母` 组合的默认功能，执行前必须由用户确认。
+
 ## 重要说明
 
 - 文档中的版本和路径基于作者当前环境，执行前必须核对。
